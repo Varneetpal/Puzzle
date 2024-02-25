@@ -1,24 +1,29 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Puzzle {
 
     private List<String> path;
-    private boolean[][] visitedBlock;
+    private boolean[][] visitedBlock; //2D array keeping track of all the visited blocks
     private boolean solutionFound;
-    private List<List<String>> allPaths; //all viable paths
+    private List<List<String>> allPaths; //all viable paths, that is the list of all the paths
     public Puzzle(){
         super();
         this.path = new ArrayList<>();
+        int rowCount = 9;
+        int colCount = 13;
         this.solutionFound = false;
-        this.visitedBlock = new boolean[9][13];
+        this.visitedBlock = new boolean[rowCount][colCount];  //TODO:  no magic numbers
         // Marking all blocks as false, that is as unvisited
-        for (int i = 0; i < 9; i++){
-            for (int j = 0; j < 13; j++){
+        //TODO: Make a function
+        for (int i = 0; i < rowCount; i++){
+            for (int j = 0; j < colCount; j++){
                 visitedBlock[i][j] = false;
             }
         }
         // Handling the poles
+        //TODO: No magic numbers
         this.visitedBlock[3][4] = true;
         this.visitedBlock[3][8] = true;
         this.visitedBlock[6][6] = true;
@@ -26,32 +31,10 @@ public class Puzzle {
         this.allPaths = new ArrayList<>();
     }
 
-    public boolean checkTrue(boolean[][] arrLocation){
-        int rowCount = 9;
-        int colCount = 13;
-        //Checking if all the blocks are covered and if the puzzle is at its last step,
-        //that is where all the blocks are covered and oly the target block is not visited
-        for (int i = 0; i < rowCount; i++){
-            for (int j = 0; j<colCount; j++){
-                if (i == 3 && j == 6){
-                    if (arrLocation[i][j]){
-                        return false;
-                    }
-                    else if(!arrLocation[i][j]){
-                        return false;
-
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-
-
     public void findPath(boolean[][] arrLocation, int currentY, int currentX){
         System.out.println("arrLocation: "+ arrLocation);
 
+        //TODO: Make the if condition readable
         if (checkTrue(arrLocation) && ((((currentX+1)==3) && (currentY==6)) ||(((currentX-1)==3)&& (currentY==6))||(((currentX)==3)&& ((currentY+1)==6))||(((currentX)==3)&& ((currentY-1)==6)) )){
             arrLocation[3][6] = true;
             solutionFound = true;
@@ -61,6 +44,8 @@ public class Puzzle {
             return;
         }
 
+        // TODO: Make it more readable
+        //If the index is out of the block
         if (currentY < -1 || currentY >= 9 || currentX < -1 || currentX >= 13 || visitedBlock[currentY][currentX]) {
             return;
         }
@@ -68,6 +53,7 @@ public class Puzzle {
         visitedBlock[currentY][currentX] = true;
 
         //Checking for all the possible steps
+        //TODO: New function lookout
         if (currentY+1 < 9){
             path.add("DOWN");
             System.out.println(path);
@@ -104,23 +90,66 @@ public class Puzzle {
 
     }
 
+    public boolean checkTrue(boolean[][] arrLocation) {
+        int destRowBlock = 3;
+        int destColBlock = 6;
+        int falseCount = countFalse(arrLocation);
+        if (falseCount == 1) {
+            if (arrLocation[destRowBlock][destColBlock] == false){ //checks if the destination block is the only unvisited block
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    public int countFalse(boolean[][] arrLocation) { //returns the total number of false elements in the array
+        int countFalseElements = 0;
+
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 13; j++) {
+                if (!arrLocation[i][j]) {
+                    countFalseElements++;
+                }
+            }
+        }
+
+        return countFalseElements;
+    }
+
 
     public static void main(String[] args) {
         boolean[][] arrLocation = new boolean[9][13];
-        //Creating a 2d array of the size of the puzzle and making all index have false value,
-        //that is marking all the blocks as unvisited
-
-        for (int i = 0; i < 9; i++){
-            for (int j = 0; j < 13; j++){
+//        //Creating a 2d array of the size of the puzzle and making all index have false value,
+//        //that is marking all the blocks as unvisited
+//
+//        for (int i = 0; i < 9; i++){
+//            for (int j = 0; j < 13; j++){
+//                arrLocation[i][j] = false;
+//            }
+//        }
+//        System.out.println(arrLocation);
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 13; j++) {
                 arrLocation[i][j] = false;
             }
         }
-//        arrLocation[1][6] = true;
-//        arrLocation[3][4] = true;
-//        arrLocation[3][8] = true;
-//        arrLocation[6][6] = true;
+//        arrLocation[3][6] = false;
+
+// Print the array
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 13; j++) {
+                System.out.print(arrLocation[i][j] ? "T " : "F "); // Print "T" for true and "F" for false
+            }
+            System.out.println(); // Move to the next line after printing each row
+        }
+
+
+
 
         Puzzle puzzle = new Puzzle();
+        System.out.println(puzzle.checkTrue(arrLocation));
         puzzle.findPath(arrLocation, 4, 12);
 
         if (puzzle.solutionFound){
