@@ -4,9 +4,9 @@ import java.util.List;
 
 public class Puzzle {
     private List<String> path = new ArrayList<>();
-    private boolean[][] visitedBlock = createInitialArray(); //2D array keeping track of all the visited blocks
+    private boolean[][] visitedBlock = createInitialArray(); //keep track of all the visited blocks
     private boolean solutionFound = false;
-    private List<List<String>> allPaths = new ArrayList<>(); //all viable paths, that is the list of all the paths
+    private List<List<String>> allPaths = new ArrayList<>(); //all viable paths
 
     public boolean[][] createInitialArray(){
         /**
@@ -73,8 +73,8 @@ public class Puzzle {
         /**
          * checks if the function is at its final state (diagonal) & only dest block is unvisited
          */
-        int destX = 3;
-        int destY = 6;
+        int destX = 3, destY = 6;
+
         if((checkTrue(arrLocation)) && (Math.abs(currentX - destX) + Math.abs(currentY - destY) == 1)){
             return true;
         }
@@ -86,8 +86,6 @@ public class Puzzle {
         /**
          * Finds the path to reach the destination
          */
-//        System.out.println("PATH: " + path);
-//        System.out.println("ARR LOCATION: " + arrLocation.toString());
 
         if (finalState(arrLocation, currentY, currentX)){
             arrLocation[3][6] = true;
@@ -103,9 +101,7 @@ public class Puzzle {
             checkAllPossibilities(currentX, currentY, arrLocation); //Checking for all the possible steps
             visitedBlock[currentY][currentX] = false; //Setting it back to false for the backtracking step
         }
-
     }
-
 
     public void checkAllPossibilities(int currentX, int currentY, boolean[][] arrLocation){
         /**
@@ -138,16 +134,8 @@ public class Puzzle {
         Puzzle puzzle = new Puzzle();
         boolean[][] arr = puzzle.createInitialArray();
 
-        int rowCount = 9, colCount = 13;
+        int destY = 4, destX = 12;
 
-        for (int i = 0; i < rowCount; i++) {
-            for (int j = 0; j < colCount; j++) {
-                System.out.print(arr[i][j] ? "T " : "F "); // Print "T" for true and "F" for false
-            }
-            System.out.println(); // Move to the next line after printing each row
-        }
-        int destY = 4;
-        int destX = 12;
         puzzle.findPath(arr, destY, destX);
 
 
